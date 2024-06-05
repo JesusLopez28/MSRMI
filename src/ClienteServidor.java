@@ -10,7 +10,7 @@ public interface ClienteServidor extends Remote {
     void recibirOrdenarParteArray(int[] array, String tipoOrdenamiento) throws java.rmi.RemoteException;
 
     // El server nos regresa el array ordenado y su tiempo de ejecucion
-    void recibirArrayFinal(int[] array, String tipo, long startTime, long startTotalTime) throws java.rmi.RemoteException;
+    void recibirArrayFinal(int[] array, String tipo, long startTime, long startTotalTime, String name) throws java.rmi.RemoteException;
 
     void mandarArrayParaUnir(int[] array) throws java.rmi.RemoteException;
 }

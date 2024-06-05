@@ -41,7 +41,7 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
 
     @Override
     public void enviarArray(String tipoOrdenamiento, long startTime, long startTotalTime) throws RemoteException {
-        servidor.recibirArray(tipoOrdenamiento, startTime, startTotalTime);
+        servidor.recibirArray(tipoOrdenamiento, startTime, startTotalTime, nombre);
     }
 
     @Override
@@ -67,7 +67,10 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
     }
 
     @Override
-    public void recibirArrayFinal(int[] array, String tipo, long startTime, long startTotalTime) throws RemoteException {
+    public void recibirArrayFinal(int[] array, String tipo, long startTime, long startTotalTime, String name) throws RemoteException {
+        if(!name.equals(nombre)){
+            return;
+        }
         endTime = System.nanoTime();
         long duration = (endTime - startTime);
         double milliseconds = (double) duration / 1_000_000.0;

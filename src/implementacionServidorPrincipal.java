@@ -7,7 +7,7 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
     public ArrayList<ClienteServidor> clientes;
     public final MergeSort mergeSort;
     public int[] arrayReal;
-
+    public String name;
     public int[] arrayAux;
     public String tipoOrdenamiento;
     public int n;
@@ -29,10 +29,13 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
     }
 
     @Override
-    public void recibirArray(String tipoOrdenamiento, long startTime, long startTotalTime) throws java.rmi.RemoteException {
+    public void recibirArray(String tipoOrdenamiento, long startTime, long startTotalTime, String name) throws java.rmi.RemoteException {
         this.tipoOrdenamiento = tipoOrdenamiento;
         this.n = arrayAux.length;
         this.m = n / clientes.size();
+        this.startTime = startTime;
+        this.startTotalTime = startTotalTime;
+        this.name = name;
 
         int inicio = 0;
 
@@ -84,10 +87,11 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
     @Override
     public void enviarArrayOrdenado(int[] array) throws java.rmi.RemoteException {
         for (ClienteServidor cliente : clientes) {
-            cliente.recibirArrayFinal(array, tipoOrdenamiento, startTime, startTotalTime);
+            cliente.recibirArrayFinal(array, tipoOrdenamiento, startTime, startTotalTime, name);
         }
-
         arrayOrdenado = null;
+        arrayAux = null;
+        arrayReal = null;
     }
 
     @Override
