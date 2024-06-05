@@ -13,6 +13,7 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
     public int n;
     public int m;
     public int veces = 0;
+    public int vecesMandadas = 0;
     private int[] arrayOrdenado;
     private long startTime;
     private long startTotalTime;
@@ -70,6 +71,7 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
         veces++;
 
         if (veces == clientes.size()) {
+            veces = 0;
             if (tipoOrdenamiento.equals("secuencial")) {
                 mergeSort.sort(arrayOrdenado, 0, arrayOrdenado.length - 1);
             } else if (tipoOrdenamiento.equals("forkjoin")) {
@@ -88,14 +90,14 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
         for (ClienteServidor cliente : clientes) {
             cliente.recibirArrayFinal(array, tipoOrdenamiento, startTime, startTotalTime, name);
         }
-        if(veces == clientes.size()) {
+
+        if (vecesMandadas == clientes.size()) {
             arrayOrdenado = null;
             arrayAux = null;
-            arrayReal = null;
-        }else {
-            veces = 0;
+            vecesMandadas = 0;
+        } else {
+            vecesMandadas++;
         }
-
     }
 
     @Override
