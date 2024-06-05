@@ -7,7 +7,7 @@ public class ClienteServidorRMI {
         try {
             String nombre = JOptionPane.showInputDialog("Introduce tu nombre: ");
             String nom = nombre;
-            Registry rmii = LocateRegistry.getRegistry("localhost", 1099);
+            Registry rmii = LocateRegistry.getRegistry("25.49.132.248", 1099);
             ServidorPrincipal servidor = (ServidorPrincipal) rmii.lookup("MergeSortRMI");
             new Thread(new implementacionClienteServidor(nom, servidor)).start();
         } catch (Exception e) {
