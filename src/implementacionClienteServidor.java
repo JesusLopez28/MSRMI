@@ -23,17 +23,25 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
     private JTextField tiempoTotalSecuencial;
     private JTextField tiempoTotalForkJoin;
     private JTextField tiempoTotalExecutorService;
+    private int[] firstArray;
+    private String tipoOrdenamiento;
+    private long startTime;
+    private long endTime;
+    private long startTotalTime;
+    private long endTotalTime;
 
     public implementacionClienteServidor(String nombre, ServidorPrincipal servidor) throws RemoteException {
         this.nombre = nombre;
         this.servidor = servidor;
         servidor.registrarCliente(this);
+        originalTextArea = new JTextArea();
         mergeSort = new MergeSort();
+        mergeSort.setOriginalTextArea(originalTextArea);
     }
 
     @Override
-    public void enviarArray(int[] array, String tipoOrdenamiento) throws RemoteException {
-        servidor.recibirArray(array, tipoOrdenamiento);
+    public void enviarArray(int[] array, String tipoOrdenamiento, long startTime, long startTotalTime) throws RemoteException {
+        servidor.recibirArray(array, tipoOrdenamiento, startTime, startTotalTime);
     }
 
     @Override
@@ -54,34 +62,89 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
     }
 
     @Override
-    public void recibirArrayFinal(int[] array, long tiempoEjecucion) throws RemoteException {
-        System.out.println("Array ordenado: ");
-        for (int i = 0; i < array.length; i++) {
-            System.out.print(array[i] + " ");
+    public void recibirArrayFinal(int[] array, String tipo, long startTime, long startTotalTime) throws RemoteException {
+        endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        double milliseconds = (double) duration / 1_000_000.0;
+
+        ordenadoTextArea.setText(mergeSort.printArray(array));
+
+        endTotalTime = System.nanoTime();
+        long durationTotal = (endTotalTime - startTotalTime) + duration;
+        double millisecondsTotal = (double) durationTotal / 1_000_000.0;
+
+        if (tipo.equals("secuencial")) {
+            tiempoSecuencial.setText(milliseconds + " ms");
+            tiempoTotalSecuencial.setText(millisecondsTotal + " ms");
+        } else if (tipo.equals("forkjoin")) {
+            tiempoForkJoin.setText(milliseconds + " ms");
+            tiempoTotalForkJoin.setText(millisecondsTotal + " ms");
+        } else if (tipo.equals("executorservice")) {
+            tiempoExecutorService.setText(milliseconds + " ms");
+            tiempoTotalExecutorService.setText(millisecondsTotal + " ms");
         }
-        System.out.println("\nTiempo de ejecucion: " + tiempoEjecucion + " ms");
     }
 
     @Override
     public void run() {
         IUFrame();
-        while (true) {
-            Scanner s = new Scanner(System.in);
-            System.out.println("Digite el tamaño del array: ");
-            int n = s.nextInt();
-            int[] array = new int[n];
-            System.out.println("Digite los elementos del array: ");
-            for (int i = 0; i < n; i++) {
-                array[i] = s.nextInt();
-            }
-            System.out.println("Digite el tipo de ordenamiento (secuencial, forkjoin, executorservice): ");
-            String tipoOrdenamiento = s.next();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("Secuencial")) {
+            tipoOrdenamiento = "secuencial";
+            startTime = System.nanoTime();
+            startTotalTime = startTime;
             try {
-                enviarArray(array, tipoOrdenamiento);
-            } catch (RemoteException e) {
-                System.out.println("Excepcion en implementacionClienteServidor: " + e);
-                e.printStackTrace();
+                enviarArray(firstArray, tipoOrdenamiento, startTime, startTotalTime);
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
             }
+        } else if (e.getActionCommand().equals("ForkJoin")) {
+            tipoOrdenamiento = "forkjoin";
+            startTime = System.nanoTime();
+            startTotalTime = startTime;
+            try {
+                enviarArray(firstArray, tipoOrdenamiento, startTime, startTotalTime);
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
+        } else if (e.getActionCommand().equals("ExecutorService")) {
+            tipoOrdenamiento = "executorservice";
+            startTime = System.nanoTime();
+            startTotalTime = startTime;
+            try {
+                enviarArray(firstArray, tipoOrdenamiento, startTime, startTotalTime);
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
+        } else if (e.getActionCommand().equals("Nuevo")) {
+            int n = Integer.parseInt(tamano.getText());
+            if (n > 0) {
+                firstArray = mergeSort.generateRandomArray(n);
+                secuencialButton.setEnabled(true);
+                forkJoinButton.setEnabled(true);
+                executorServiceButton.setEnabled(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "El tamaño debe ser mayor a 0", "Error", JOptionPane.ERROR_MESSAGE);
+                secuencialButton.setEnabled(false);
+                forkJoinButton.setEnabled(false);
+                executorServiceButton.setEnabled(false);
+            }
+        } else if (e.getActionCommand().equals("Limpiar")) {
+            originalTextArea.setText("");
+            ordenadoTextArea.setText("");
+            tamano.setText("0");
+            secuencialButton.setEnabled(false);
+            forkJoinButton.setEnabled(false);
+            executorServiceButton.setEnabled(false);
+            tiempoSecuencial.setText("");
+            tiempoForkJoin.setText("");
+            tiempoExecutorService.setText("");
+            tiempoTotalSecuencial.setText("");
+            tiempoTotalForkJoin.setText("");
+            tiempoTotalExecutorService.setText("");
         }
     }
 
@@ -99,7 +162,6 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
         Panel textAreasPanel = new Panel(new GridLayout(1, 2, 10, 10));
         panel.add(textAreasPanel, BorderLayout.CENTER);
 
-        originalTextArea = new JTextArea();
         originalTextArea.setEditable(false);
         originalTextArea.setLineWrap(true);
         originalTextArea.setWrapStyleWord(true);
@@ -192,11 +254,6 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
         tiempoPanel.add(tiempoTotalExecutorService);
 
         frame.setVisible(true);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
     }
 
 }

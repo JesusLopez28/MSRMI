@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.concurrent.ForkJoinPool;
@@ -11,7 +12,8 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
     public int m;
     public int veces = 0;
     private int[] arrayOrdenado;
-    private int[] arrayFinal;
+    private long startTime;
+    private long startTotalTime;
 
     public implementacionServidorPrincipal() throws java.rmi.RemoteException {
         super();
@@ -25,7 +27,7 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
     }
 
     @Override
-    public void recibirArray(int[] array, String tipoOrdenamiento) throws java.rmi.RemoteException {
+    public void recibirArray(int[] array, String tipoOrdenamiento, long startTime, long startTotalTime) throws java.rmi.RemoteException {
         this.array = array;
         this.tipoOrdenamiento = tipoOrdenamiento;
         this.n = array.length;
@@ -74,17 +76,16 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
                 ExecutorServiceOperator executorService = new ExecutorServiceOperator(mergeSort);
                 executorService.sortWithExecutorService(arrayOrdenado);
             }
-            enviarArrayOrdenado(arrayOrdenado, System.currentTimeMillis());
+            enviarArrayOrdenado(arrayOrdenado);
         }
     }
 
     @Override
-    public void enviarArrayOrdenado(int[] array, long tiempoEjecucion) throws java.rmi.RemoteException {
+    public void enviarArrayOrdenado(int[] array) throws java.rmi.RemoteException {
         for (ClienteServidor cliente : clientes) {
-            cliente.recibirArrayFinal(array, tiempoEjecucion);
+            cliente.recibirArrayFinal(array, tipoOrdenamiento, startTime, startTotalTime);
         }
 
         arrayOrdenado = null;
-        arrayFinal = null;
     }
 }

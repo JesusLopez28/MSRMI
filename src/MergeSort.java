@@ -2,14 +2,9 @@ import javax.swing.*;
 
 public class MergeSort {
 
-    private final JTextArea originalTextArea;
+    private JTextArea originalTextArea;
 
-    public MergeSort(JTextArea originalTextArea) {
-      this.originalTextArea = originalTextArea;
-    }
-
-    public MergeSort() {
-      this.originalTextArea = null;
+    public MergeSort( ) {
     }
 
     public void sort(int[] array, int left, int right) {
@@ -63,7 +58,7 @@ public class MergeSort {
         int[] array = new int[n];
         for (int i = 0; i < n; ++i) {
             array[i] = (int) (Math.random() * 100);
-            //originalTextArea.append(array[i] + " ");
+            originalTextArea.append(array[i] + " ");
         }
 
         return array;
@@ -75,6 +70,15 @@ public class MergeSort {
             result.append(j).append(" ");
         }
         return result.toString();
+    }
+
+    // Set y get de originalTextArea
+    public JTextArea getOriginalTextArea() {
+        return originalTextArea;
+    }
+
+    public void setOriginalTextArea(JTextArea originalTextArea) {
+        this.originalTextArea = originalTextArea;
     }
 
 }
