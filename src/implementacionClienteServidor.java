@@ -40,8 +40,13 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
     }
 
     @Override
-    public void enviarArray(int[] array, String tipoOrdenamiento, long startTime, long startTotalTime) throws RemoteException {
-        servidor.recibirArray(array, tipoOrdenamiento, startTime, startTotalTime);
+    public void enviarArray(String tipoOrdenamiento, long startTime, long startTotalTime) throws RemoteException {
+        servidor.recibirArray(tipoOrdenamiento, startTime, startTotalTime);
+    }
+
+    @Override
+    public void mandarArrayParaUnir(int[] array) throws RemoteException {
+        servidor.recibirArrayParaUnir(array);
     }
 
     @Override
@@ -97,7 +102,7 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
             startTime = System.nanoTime();
             startTotalTime = startTime;
             try {
-                enviarArray(firstArray, tipoOrdenamiento, startTime, startTotalTime);
+                enviarArray(tipoOrdenamiento, startTime, startTotalTime);
             } catch (RemoteException ex) {
                 ex.printStackTrace();
             }
@@ -106,7 +111,7 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
             startTime = System.nanoTime();
             startTotalTime = startTime;
             try {
-                enviarArray(firstArray, tipoOrdenamiento, startTime, startTotalTime);
+                enviarArray(tipoOrdenamiento, startTime, startTotalTime);
             } catch (RemoteException ex) {
                 ex.printStackTrace();
             }
@@ -115,7 +120,7 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
             startTime = System.nanoTime();
             startTotalTime = startTime;
             try {
-                enviarArray(firstArray, tipoOrdenamiento, startTime, startTotalTime);
+                enviarArray(tipoOrdenamiento, startTime, startTotalTime);
             } catch (RemoteException ex) {
                 ex.printStackTrace();
             }
@@ -123,6 +128,11 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
             int n = Integer.parseInt(tamano.getText());
             if (n > 0) {
                 firstArray = mergeSort.generateRandomArray(n);
+                try {
+                    mandarArrayParaUnir(firstArray);
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
                 secuencialButton.setEnabled(true);
                 forkJoinButton.setEnabled(true);
                 executorServiceButton.setEnabled(true);

@@ -6,7 +6,9 @@ import java.util.concurrent.ForkJoinPool;
 public class implementacionServidorPrincipal extends UnicastRemoteObject implements ServidorPrincipal {
     public ArrayList<ClienteServidor> clientes;
     public final MergeSort mergeSort;
-    public int[] array;
+    public int[] arrayReal;
+
+    public int[] arrayAux;
     public String tipoOrdenamiento;
     public int n;
     public int m;
@@ -27,10 +29,9 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
     }
 
     @Override
-    public void recibirArray(int[] array, String tipoOrdenamiento, long startTime, long startTotalTime) throws java.rmi.RemoteException {
-        this.array = array;
+    public void recibirArray(String tipoOrdenamiento, long startTime, long startTotalTime) throws java.rmi.RemoteException {
         this.tipoOrdenamiento = tipoOrdenamiento;
-        this.n = array.length;
+        this.n = arrayAux.length;
         this.m = n / clientes.size();
 
         int inicio = 0;
@@ -40,7 +41,7 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
 
             int[] parteArray = new int[fin - inicio];
             for (int j = inicio; j < fin; j++) {
-                parteArray[j - inicio] = array[j];
+                parteArray[j - inicio] = arrayAux[j];
             }
 
             clientes.get(i).recibirOrdenarParteArray(parteArray, tipoOrdenamiento);
@@ -87,5 +88,26 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
         }
 
         arrayOrdenado = null;
+    }
+
+    @Override
+    public void recibirArrayParaUnir(int[] array) throws java.rmi.RemoteException {
+
+        if (arrayAux == null) {
+            arrayAux = array;
+        } else {
+            int length = arrayAux.length + array.length;
+            int[] arrayReal = new int[length];
+            int i = 0;
+            for (int j = 0; j < arrayAux.length; j++) {
+                arrayReal[i] = arrayAux[j];
+                i++;
+            }
+            for (int j = 0; j < array.length; j++) {
+                arrayReal[i] = array[j];
+                i++;
+            }
+            arrayAux = arrayReal;
+        }
     }
 }
