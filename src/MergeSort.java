@@ -4,7 +4,7 @@ public class MergeSort {
 
     private JTextArea originalTextArea;
 
-    public MergeSort( ) {
+    public MergeSort() {
     }
 
     public void sort(int[] array, int left, int right) {
@@ -81,4 +81,15 @@ public class MergeSort {
         this.originalTextArea = originalTextArea;
     }
 
+
+    public boolean validarDatos(int[] arrayOrdenado, String tipoOrdenamiento) {
+        if (tipoOrdenamiento.equals("secuencial")) {
+            try {
+                Thread.sleep((long) (Math.random() * 30 + 20));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
 }

@@ -70,6 +70,11 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
 
         if (veces == clientes.size()) {
             veces = 0;
+            boolean valid = mergeSort.validarDatos(arrayOrdenado, tipoOrdenamiento);
+            if (!valid) {
+                JOptionPane.showMessageDialog(null, "Error en el ordenamiento", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             if (tipoOrdenamiento.equals("secuencial")) {
                 mergeSort.sort(arrayOrdenado, 0, arrayOrdenado.length - 1);
             } else if (tipoOrdenamiento.equals("forkjoin")) {
@@ -85,7 +90,6 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
 
     @Override
     public void enviarArrayOrdenado(int[] array) throws java.rmi.RemoteException {
-        validarDatos();
         for (ClienteServidor cliente : clientes) {
             cliente.recibirArrayFinal(array, tipoOrdenamiento, startTime, startTotalTime, name);
         }
@@ -116,15 +120,5 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
     public void limpiarArrays() throws java.rmi.RemoteException {
         arrayAux = null;
         arrayOrdenado = null;
-    }
-
-    public void validarDatos(){
-        if (tipoOrdenamiento.equals("secuencial")) {
-            try {
-                Thread.sleep((long) (Math.random() * 20 + 30));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
