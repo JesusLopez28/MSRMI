@@ -6,14 +6,12 @@ import java.util.concurrent.ForkJoinPool;
 public class implementacionServidorPrincipal extends UnicastRemoteObject implements ServidorPrincipal {
     public ArrayList<ClienteServidor> clientes;
     public final MergeSort mergeSort;
-    public int[] arrayReal;
     public String name;
     public int[] arrayAux;
     public String tipoOrdenamiento;
     public int n;
     public int m;
     public int veces = 0;
-    public int vecesMandadas = 0;
     private int[] arrayOrdenado;
     private long startTime;
     private long startTotalTime;
@@ -90,14 +88,6 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
         for (ClienteServidor cliente : clientes) {
             cliente.recibirArrayFinal(array, tipoOrdenamiento, startTime, startTotalTime, name);
         }
-
-        if (vecesMandadas == clientes.size()) {
-            arrayOrdenado = null;
-            arrayAux = null;
-            vecesMandadas = 0;
-        } else {
-            vecesMandadas++;
-        }
     }
 
     @Override
@@ -119,5 +109,11 @@ public class implementacionServidorPrincipal extends UnicastRemoteObject impleme
             }
             arrayAux = arrayReal;
         }
+    }
+
+    @Override
+    public void limpiarArrays() throws java.rmi.RemoteException {
+        arrayAux = null;
+        arrayOrdenado = null;
     }
 }

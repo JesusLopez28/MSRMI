@@ -68,7 +68,7 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
 
     @Override
     public void recibirArrayFinal(int[] array, String tipo, long startTime, long startTotalTime, String name) throws RemoteException {
-        if(!name.equals(nombre)){
+        if (!name.equals(nombre)) {
             return;
         }
         endTime = System.nanoTime();
@@ -158,6 +158,11 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
             tiempoTotalSecuencial.setText("");
             tiempoTotalForkJoin.setText("");
             tiempoTotalExecutorService.setText("");
+            try {
+                servidor.limpiarArrays();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 

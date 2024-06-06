@@ -15,4 +15,7 @@ public interface ServidorPrincipal extends Remote{
 
     // Recibir array de un cliente pero que se vaya uniendo
     void recibirArrayParaUnir(int[] array) throws java.rmi.RemoteException;
+
+    // Limpiar el arrays
+    void limpiarArrays() throws java.rmi.RemoteException;
 }
