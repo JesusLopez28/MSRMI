@@ -24,11 +24,7 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
     private JTextField tiempoTotalForkJoin;
     private JTextField tiempoTotalExecutorService;
     private int[] firstArray;
-    private String tipoOrdenamiento;
-    private long startTime;
-    private long endTime;
-    private long startTotalTime;
-    private long endTotalTime;
+    private String tipoOrdenamiento;;
 
     public implementacionClienteServidor(String nombre, ServidorPrincipal servidor) throws RemoteException {
         this.nombre = nombre;
@@ -71,6 +67,8 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
         if (!name.equals(nombre)) {
             return;
         }
+        long endTotalTime;
+        long endTime;
         endTime = System.nanoTime();
         long duration = (endTime - startTime);
         double milliseconds = (double) duration / 1_000_000.0;
@@ -100,6 +98,9 @@ public class implementacionClienteServidor extends UnicastRemoteObject implement
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        long startTime;
+        long startTotalTime;
+
         if (e.getActionCommand().equals("Secuencial")) {
             tipoOrdenamiento = "secuencial";
             startTime = System.nanoTime();
